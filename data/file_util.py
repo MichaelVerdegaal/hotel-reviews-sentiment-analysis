@@ -9,7 +9,7 @@ def csv_to_df(filepath):
     """
     Reads a csv and converts it to a dataframe
     :param filepath: path to csv file
-    :return: pandas dataframe
+    :return: dask dataframe
     """
     return dd.read_csv(filepath)
 
