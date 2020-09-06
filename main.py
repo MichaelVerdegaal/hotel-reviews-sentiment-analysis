@@ -3,5 +3,5 @@
 ###
 from data.scraping import *
 
-p = get_all_catalog_urls()
-c = get_hotel_review_pages(p)
+c = get_hotel_review_pages()
+print(len(c))

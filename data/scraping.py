@@ -19,21 +19,26 @@ def file_exists(filepath):
     return os.path.isfile(filepath)
 
 
-def write_list(list_to_use, filepath):
+def write_pickled_txt(object_to_dump, filepath):
     """
-    Writes a list to a file as long as the file doesn't exist
-    :param list_to_use: list that will be written
+    Pickled and writes an object to a file as long as the file doesn't exist
+    :param object_to_dump: object that will be written
     :param filepath: where the file is
     """
     if file_exists(filepath):
         pass
     else:
         outfile = open(filepath, 'wb')
-        pickle.dump(list_to_use, outfile)
+        pickle.dump(object_to_dump, outfile)
         outfile.close()
 
 
-def read_list(filepath):
+def read_pickled_txt(filepath):
+    """
+    Reads from a file and unpickles the stored object
+    :param filepath: where the file is
+    :return: unpickled object
+    """
     infile = open(filepath, 'rb')
     unpickled_object = pickle.load(infile)
     infile.close()
@@ -62,7 +67,7 @@ def get_all_catalog_urls():
     """
     filepath = "static/catalog_urls.txt"
     if file_exists(filepath):
-        return read_list(filepath)
+        return read_pickled_txt(filepath)
     else:
         base_html = get_html()
         base_soup = BeautifulSoup(base_html, 'lxml')
@@ -78,14 +83,19 @@ def get_all_catalog_urls():
             new_soup = BeautifulSoup(new_html, 'lxml')
             nextpage = new_soup.find('a', class_='paging-next')
 
-        write_list(page_list, filepath)
+        write_pickled_txt(page_list, filepath)
         return page_list
 
 
-def get_hotel_review_pages(catalog_url_list):
+def get_hotel_review_pages(catalog_url_list=get_all_catalog_urls()):
+    """
+    Scrapes all hotel review pages from a list of catalog pages.
+    :param catalog_url_list: list of urls
+    :return: list of urls
+    """
     filepath = "static/hotel_review_urls.txt"
     if file_exists(filepath):
-        return read_list(filepath)
+        return read_pickled_txt(filepath)
     else:
         hotel_review_page_list = []
         for catalog_url in catalog_url_list:
@@ -94,8 +104,7 @@ def get_hotel_review_pages(catalog_url_list):
             hotel_page_list = catalog_soup.find_all('a', class_='hotel_name_link url')
             hotel_page_list = [i.get('href').replace("#hotelTmpl", "#tab-reviews") for i in hotel_page_list]
             hotel_page_list = [f"{base_url}{i}".replace("\n", "") for i in hotel_page_list]
-            print(hotel_page_list)
             hotel_review_page_list.extend(hotel_page_list)
 
-        write_list(hotel_review_page_list, filepath)
+        write_pickled_txt(hotel_review_page_list, filepath)
         return hotel_review_page_list
