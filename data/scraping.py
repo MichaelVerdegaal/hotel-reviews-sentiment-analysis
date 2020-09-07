@@ -1,5 +1,6 @@
 import os
 import pickle
+import time
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -51,9 +52,10 @@ def get_html(page=hotel_catalog_url):
     :return: html as string
     """
     driver = webdriver.Chrome(ChromeDriverManager().install())
-    driver.get(page)
-    driver.implicitly_wait(4)
+    driver.set_page_load_timeout(30)
     try:
+        driver.get(page)
+        time.sleep(2.5)
         return driver.page_source
     finally:
         driver.close()
@@ -108,3 +110,42 @@ def get_hotel_review_pages(catalog_url_list=get_all_catalog_urls()):
 
         write_pickled_txt(hotel_review_page_list, filepath)
         return hotel_review_page_list
+
+
+def gather_reviews(review_urls=get_hotel_review_pages()):
+    """
+    Gather review text from a hotel page (with the review tab open)
+    :param review_urls:
+    :return:
+    """
+    filepath = "static/reviews.txt"
+    if file_exists(filepath):
+        return read_pickled_txt(filepath)
+    else:
+        review_list = []
+        for review_url in review_urls:
+            review_html = get_html(review_url)
+            review_soup = BeautifulSoup(review_html, 'lxml')
+            # Skip hotels with no average score, as this indicates they have no reviews
+            if score_badge := review_soup.find("div", class_="bui-review-score__badge"):
+                average_score = score_badge.text.strip()
+                hotel_name = review_soup.find(id="hp_hotel_name_reviews").text.strip()
+                hotel_address = review_soup.find("span", class_="hp_address_subtitle").text.strip()
+
+                review_blocks = review_soup.select(".c-review-block")
+                print(f"Found {len(review_blocks)} reviews\n")
+                for r in review_blocks:
+                    nationality = r.find("span", class_="bui-avatar-block__subtitle").text.strip()
+                    score = r.find(class_="bui-review-score__badge").text.strip()
+                    positive_review = r.find(class_="c-review__row")
+                    if positive_review:
+                        positive_review = positive_review.p.find(class_="c-review__body").text.strip()
+                    else:
+                        positive_review = "Nothing"
+                    negative_review = r.find(class_="lalala")
+                    if negative_review:
+                        negative_review = negative_review.p.find(class_="c-review__body").text.strip()
+                    else:
+                        negative_review = "Nothing"
+                    print(f"A score {score} from {nationality}. \nLiked ['{positive_review}'] \nDisliked ['{negative_review}']\n\n")
+                # review = []
