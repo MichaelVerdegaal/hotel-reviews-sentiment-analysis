@@ -4,8 +4,8 @@ import time
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 # Searching for hotels on booking.com in London that have an average score
 base_url = 'https://www.booking.com'
@@ -30,9 +30,8 @@ def write_pickled_txt(object_to_dump, filepath):
     if file_exists(filepath):
         pass
     else:
-        outfile = open(filepath, 'wb')
-        pickle.dump(object_to_dump, outfile)
-        outfile.close()
+        with open(filepath, 'wb') as f:
+            pickle.dump(object_to_dump, f)
 
 
 def read_pickled_txt(filepath):
@@ -41,10 +40,12 @@ def read_pickled_txt(filepath):
     :param filepath: where the file is
     :return: unpickled object
     """
-    infile = open(filepath, 'rb')
-    unpickled_object = pickle.load(infile)
-    infile.close()
-    return unpickled_object
+    with open(filepath, 'rb') as f:
+        try:
+            unpickled_object = pickle.load(f)
+            return unpickled_object
+        except pickle.UnpicklingError as e:
+            raise e
 
 
 def get_html(page=hotel_catalog_url, headless_mode=True):
@@ -78,10 +79,12 @@ def get_all_catalog_urls():
     Scrapes all catalog pages from the base catalog page
     :return: list of urls
     """
-    filepath = "static/catalog_urls.txt"
+    filepath = "static/catalog_urls.pickle"
     if file_exists(filepath):
         return read_pickled_txt(filepath)
     else:
+        print("Starting catalog page scraping!\n")
+        print("-------------------------\n")
         base_html = get_html()
         base_soup = BeautifulSoup(base_html, 'lxml')
         page_list = [hotel_catalog_url]
@@ -90,6 +93,7 @@ def get_all_catalog_urls():
         while nextpage:
             href = nextpage.get('href')
             new_page = f'{base_url}{href}'
+            print(f"found new catalog page {new_page}")
             page_list.append(new_page)
 
             new_html = get_html(new_page)
@@ -107,12 +111,15 @@ def get_hotel_review_pages(catalog_url_list=get_all_catalog_urls()):
     :param catalog_url_list: list of urls
     :return: list of urls
     """
-    filepath = "static/hotel_review_urls.txt"
+    filepath = "static/hotel_review_urls.pickle"
     if file_exists(filepath):
         return read_pickled_txt(filepath)
     else:
+        print("Starting hotel review page scraping!")
+        print("-------------------------\n")
         hotel_review_page_list = []
         for catalog_url in catalog_url_list:
+            print(f"Scraping hotel links from {catalog_url}")
             catalog_html = get_html(catalog_url)
             catalog_soup = BeautifulSoup(catalog_html, 'lxml')
             hotel_page_list = catalog_soup.find_all('a', class_='hotel_name_link url')
@@ -131,12 +138,15 @@ def gather_reviews(review_urls=get_hotel_review_pages()):
     :param review_urls: list of hotel page urls
     :return: list of reviews
     """
-    filepath = "static/reviews.txt"
+    filepath = "static/reviews.pickle"
     if file_exists(filepath):
         return read_pickled_txt(filepath)
     else:
+        print("Starting review scraping!\n")
+        print("-------------------------\n")
         review_list = []
         for review_url in review_urls:
+            print(f"Scraping reviews for page {review_url}")
             review_html = get_html(review_url)
             review_soup = BeautifulSoup(review_html, 'lxml')
             # Skip hotels with no average score, as this indicates they have no reviews
