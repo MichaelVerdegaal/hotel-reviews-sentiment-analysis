@@ -1,10 +1,12 @@
 ###
 # This file will change frequently until all the modules have been written, for testing purposes
 ###
-from data.scraping import *
 import pandas as pd
 
-c = gather_reviews()
+from data.scraping import get_reviews
+
+
+c = get_reviews()
 
 df = pd.DataFrame(c,
                   columns=["Hotel address", "Average Score", "Hotel name", "Nationality", "Negative review",

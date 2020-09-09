@@ -1,10 +1,12 @@
 import os
+from pathlib import Path
 import pickle
 
 import dask.dataframe as dd
 
 kaggle_csv = "static/kaggle_reviews.csv"
 manual_csv = "static/manual_reviews.csv"
+rootdir = Path(os.getcwd()).parents[0]
 
 
 def csv_to_df(filepath):

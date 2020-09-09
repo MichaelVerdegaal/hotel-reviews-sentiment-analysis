@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-
 # Searching for hotels on booking.com in London that have an average score
-from data.file_util import write_pickled_txt, read_pickled_txt, file_exists
+from data.file_util import write_pickled_txt, read_pickled_txt, file_exists, rootdir
+import os
 
 base_url = 'https://www.booking.com'
 hotel_catalog_url = 'https://www.booking.com/searchresults.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaKkBiAEBmAExuAEKyAEF2AEB6AEB-AECiAIBqAIDuAL_4sP6BcACAdICJGFhY2JlMjA5LWE3ZWMtNGZhZC05MzI2LWM3NmRlMmQ2MGZiZNgCBeACAQ&sid=b7ae3ce18748b2e76e194075e2e4ae6c&tmpl=searchresults&ac_click_type=b&ac_position=1&class_interval=1&dest_id=222&dest_type=country&dtdisc=0&from_sf=1&group_adults=2&group_children=0&inac=0&index_postcard=0&label_click=undef&nflt=ht_id%3D204%3Bclass%3D5%3Bclass%3D4%3Bclass%3D3%3Bclass%3D2%3Bclass%3D1%3Buf%3D-2601889%3B&no_rooms=1&order=class_and_price&postcard=0&raw_dest_type=country&room1=A%2CA&sb_price_type=total&search_selected=1&shw_aparth=0&slp_r_match=0&srpvid=7a84606916b6014e&ss=United%20Kingdom&ss_all=0&ss_raw=uni&ssb=empty&sshis=0&ssne=Spain&ssne_untouched=Spain&top_ufis=1&rows=25'
@@ -38,12 +38,12 @@ def get_html(page=hotel_catalog_url, headless_mode=True):
         driver.quit()
 
 
-def get_all_catalog_urls():
+def get_all_catalog_urls(catalog_url=hotel_catalog_url):
     """
     Scrapes all catalog pages from the base catalog page
     :return: list of urls
     """
-    filepath = "static/catalog_urls.pickle"
+    filepath = os.path.join(rootdir, "static/catalog_urls.pickle")
     if file_exists(filepath):
         return read_pickled_txt(filepath)
     else:
@@ -51,7 +51,7 @@ def get_all_catalog_urls():
         print("-------------------------\n")
         base_html = get_html()
         base_soup = BeautifulSoup(base_html, 'lxml')
-        page_list = [hotel_catalog_url]
+        page_list = [catalog_url]
 
         nextpage = base_soup.find('a', class_='paging-next')
         while nextpage:
@@ -75,7 +75,7 @@ def get_hotel_review_pages(catalog_url_list=get_all_catalog_urls()):
     :param catalog_url_list: list of urls
     :return: list of urls
     """
-    filepath = "static/hotel_review_urls.pickle"
+    filepath = os.path.join(rootdir, "static/hotel_review_urls.pickle")
     if file_exists(filepath):
         return read_pickled_txt(filepath)
     else:
@@ -96,13 +96,13 @@ def get_hotel_review_pages(catalog_url_list=get_all_catalog_urls()):
         return hotel_review_page_list
 
 
-def gather_reviews(review_urls=get_hotel_review_pages()):
+def get_reviews(review_urls=get_hotel_review_pages()):
     """
     Scrapes review text from a hotel page (with the review tab open)
     :param review_urls: list of hotel page urls
     :return: list of reviews
     """
-    filepath = "static/reviews.pickle"
+    filepath = os.path.join(rootdir, "static/reviews.pickle")
     if file_exists(filepath):
         return read_pickled_txt(filepath)
     else:
