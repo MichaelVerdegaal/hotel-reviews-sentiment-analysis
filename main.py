@@ -7,3 +7,5 @@ c = gather_reviews()
 
 for i in c:
     print(i)
+
+waithere = 5

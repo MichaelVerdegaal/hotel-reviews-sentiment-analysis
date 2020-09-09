@@ -47,14 +47,20 @@ def read_pickled_txt(filepath):
     return unpickled_object
 
 
-def get_html(page=hotel_catalog_url):
+def get_html(page=hotel_catalog_url, headless_mode=True):
     """
     Gets the html content from a hotel catalog page
     :return: html as string
     """
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument('--lang=en_US')
+    if headless_mode:
+        # User agent needs to be set when headless mode is active, otherwise booking.com rejects the request
+        user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
+        chrome_options.add_argument(f'user-agent={user_agent}')
+        chrome_options.add_argument("--headless")
+
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
     driver.set_page_load_timeout(30)
     try:
@@ -121,9 +127,9 @@ def get_hotel_review_pages(catalog_url_list=get_all_catalog_urls()):
 
 def gather_reviews(review_urls=get_hotel_review_pages()):
     """
-    Gather review text from a hotel page (with the review tab open)
-    :param review_urls:
-    :return:
+    Scrapes review text from a hotel page (with the review tab open)
+    :param review_urls: list of hotel page urls
+    :return: list of reviews
     """
     filepath = "static/reviews.txt"
     if file_exists(filepath):
@@ -155,6 +161,7 @@ def gather_reviews(review_urls=get_hotel_review_pages()):
                         negative_review = "Nothing"
                     review = [hotel_address, average_score, hotel_name, nationality, negative_review, positive_review,
                               score]
+                    print(f"Adding review from {hotel_name}")
                     review_list.append(review)
         write_pickled_txt(review_list, filepath)
         print(f"Written reviews to {filepath}!")
