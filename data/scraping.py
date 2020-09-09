@@ -147,8 +147,16 @@ def gather_reviews(review_urls=get_hotel_review_pages()):
 
                 review_blocks = review_soup.select(".c-review-block")
                 for r in review_blocks:
-                    nationality = r.find("span", class_="bui-avatar-block__subtitle").text.strip()
-                    score = r.find(class_="bui-review-score__badge").text.strip()
+                    nationality = r.find("span", class_="bui-avatar-block__subtitle")
+                    if nationality:
+                        nationality = nationality.text.strip()
+                    else:
+                        nationality = "Nothing"
+                    score = r.find(class_="bui-review-score__badge")
+                    if score:
+                        score = score.text.strip()
+                    else:
+                        score = "Nothing"
                     positive_review = r.find(class_="c-review__row")
                     if positive_review:
                         positive_review = positive_review.p.find(class_="c-review__body").text.strip()
@@ -161,7 +169,7 @@ def gather_reviews(review_urls=get_hotel_review_pages()):
                         negative_review = "Nothing"
                     review = [hotel_address, average_score, hotel_name, nationality, negative_review, positive_review,
                               score]
-                    print(f"Adding review from {hotel_name}")
+                    print(f'Adding review for hotel "{hotel_name}"')
                     review_list.append(review)
         write_pickled_txt(review_list, filepath)
         print(f"Written reviews to {filepath}!")
