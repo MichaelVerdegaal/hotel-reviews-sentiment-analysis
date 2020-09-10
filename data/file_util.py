@@ -1,12 +1,9 @@
 import os
-from pathlib import Path
 import pickle
 
 import dask.dataframe as dd
 
-kaggle_csv = "static/kaggle_reviews.csv"
-manual_csv = "static/manual_reviews.csv"
-rootdir = Path(os.getcwd()).parents[0]
+from config import KAGGLE_CSV
 
 
 def csv_to_df(filepath):
@@ -23,7 +20,7 @@ def read_all_csv():
     Master function to read all csv files
     :return: pandas dataframes
     """
-    kaggle_df = csv_to_df(kaggle_csv)
+    kaggle_df = csv_to_df(KAGGLE_CSV)
     return kaggle_df
 
 

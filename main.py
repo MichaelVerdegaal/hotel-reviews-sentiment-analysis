@@ -5,7 +5,6 @@ import pandas as pd
 
 from data.scraping import get_reviews
 
-
 c = get_reviews()
 
 df = pd.DataFrame(c,
