@@ -6,25 +6,6 @@ import dask.dataframe as dd
 from config import KAGGLE_CSV, MANUAL_CSV, ROOT_DIR
 
 
-def read_scraped_reviews():
-    """
-    Reads the pickled reviews file sourced from scraping
-    :return: multidimensional list of reviews
-    """
-    filepath = os.path.join(ROOT_DIR, "static/reviews.pickle")
-    return read_pickled_txt(filepath)
-
-
-def read_kaggle_reviews():
-    kaggle_df = dd.read_csv(KAGGLE_CSV)
-    return kaggle_df
-
-
-def read_manual_reviews():
-    manual_df = dd.read_csv(MANUAL_CSV, delimiter=";;", engine="python", header=0)
-    return manual_df
-
-
 def write_pickled_txt(object_to_dump, filepath):
     """
     Pickled and writes an object to a file as long as the file doesn't exist
@@ -59,3 +40,22 @@ def file_exists(filepath):
     :return: boolean
     """
     return os.path.isfile(filepath)
+
+
+def read_scraped_reviews():
+    """
+    Reads the pickled reviews file sourced from scraping
+    :return: multidimensional list of reviews
+    """
+    filepath = os.path.join(ROOT_DIR, "static/reviews.pickle")
+    return read_pickled_txt(filepath)
+
+
+def read_kaggle_reviews():
+    kaggle_df = dd.read_csv(KAGGLE_CSV)
+    return kaggle_df
+
+
+def read_manual_reviews():
+    manual_df = dd.read_csv(MANUAL_CSV, delimiter=";;", engine="python", header=0)
+    return manual_df

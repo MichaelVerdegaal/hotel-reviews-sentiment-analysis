@@ -8,12 +8,31 @@ usable_column_list = ["Hotel_Address", "Average_Score", "Hotel_Name", "Reviewer_
 
 
 def process_scraped_reviews(reviews=read_scraped_reviews()):
+    """
+    Processes the scraped reviews so it can be successfully merged
+    :param reviews: multi dimensional list of reviews
+    :return: dataframe
+    """
     df = pd.DataFrame(reviews, columns=usable_column_list)
     df.transpose()
     df = dd.from_pandas(df, npartitions=3)
     df['Average_Score'] = df['Average_Score'].astype('float64')
     df['Reviewer_Score'] = df['Reviewer_Score'].astype('float64')
     return df
+
+
+def merge_dataframes(df1, df2):
+    """
+    Merges two dataframes together
+    :param df1: first dataframe
+    :param df2: second dataframe
+    :return: merged dataframe
+    """
+    new_df = dd.merge(df1[usable_column_list],
+                      df2[usable_column_list],
+                      on=usable_column_list,
+                      how='outer')
+    return new_df
 
 
 def get_all_review_sources():
@@ -28,15 +47,11 @@ def get_all_review_sources():
 
 
 def get_combined_review_df():
+    """
+    Executes all other functions in this file to return 1 dataframe filled with reviews
+    :return: dataframe
+    """
     kaggle_df, manual_df, scraped_df = get_all_review_sources()
     final_df = merge_dataframes(kaggle_df, manual_df)
     final_df = merge_dataframes(final_df, scraped_df)
     return final_df
-
-
-def merge_dataframes(df1, df2):
-    new_df = dd.merge(df1[usable_column_list],
-                      df2[usable_column_list],
-                      on=usable_column_list,
-                      how='outer')
-    return new_df
