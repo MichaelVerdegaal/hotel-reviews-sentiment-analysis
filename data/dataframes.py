@@ -3,7 +3,8 @@ import pandas as pd
 
 from data.file_util import read_scraped_reviews, read_kaggle_reviews, read_manual_reviews
 
-usable_column_list = ["Hotel_Address", "Average_Score", "Hotel_Name", "Reviewer_Nationality", "Negative_Review", "Positive_Review", "Reviewer_Score"]
+usable_column_list = ["Hotel_Address", "Average_Score", "Hotel_Name", "Reviewer_Nationality", "Negative_Review",
+                      "Positive_Review", "Reviewer_Score"]
 
 
 def process_scraped_reviews(reviews=read_scraped_reviews()):
@@ -24,6 +25,13 @@ def get_all_review_sources():
     manual_df = read_manual_reviews()
     scraped_df = process_scraped_reviews()
     return kaggle_df, manual_df, scraped_df
+
+
+def get_combined_review_df():
+    kaggle_df, manual_df, scraped_df = get_all_review_sources()
+    final_df = merge_dataframes(kaggle_df, manual_df)
+    final_df = merge_dataframes(final_df, scraped_df)
+    return final_df
 
 
 def merge_dataframes(df1, df2):
