@@ -15,14 +15,14 @@ def read_scraped_reviews():
     return read_pickled_txt(filepath)
 
 
-def read_all_csv():
-    """
-    Master function to read all csv files
-    :return: pandas dataframes
-    """
+def read_kaggle_reviews():
     kaggle_df = dd.read_csv(KAGGLE_CSV)
-    manual_df = dd.read_csv(MANUAL_CSV,  delimiter=";;", engine="python")
-    return kaggle_df, manual_df
+    return kaggle_df
+
+
+def read_manual_reviews():
+    manual_df = dd.read_csv(MANUAL_CSV, delimiter=";;", engine="python", header=0)
+    return manual_df
 
 
 def write_pickled_txt(object_to_dump, filepath):

@@ -1,4 +1,4 @@
-Hotel_Address,Average_Score,Hotel_Name,Reviewer_Nationality,Negative_Review,Positive_Review,Reviewer_Score
+Hotel_Address;;Average_Score;;Hotel_Name;;Reviewer_Nationality;;Negative_Review;;Positive_Review;;Reviewer_Score
 Jameson street;; 7.5;; The Long Haul;; United Kingdom;; Nothing;; The beds were soft and squishy and i liked it;; 8.0
 Jameson street;; 7.5;; The Long Haul;; United Kingdom;; Absolutely rancid smell from the shower;; The drinks were ok i guess ;; 5.5
 Jameson street;; 7.5;; The Long Haul;; France;; Floor was creaking ;; 24/7 staff service! ;; 6.7
