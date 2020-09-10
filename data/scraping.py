@@ -101,7 +101,7 @@ def get_reviews(review_urls=get_hotel_review_pages()):
     :param review_urls: list of hotel page urls
     :return: list of reviews
     """
-    filepath = os.path.join(ROOT_DIR, "static/reviews.pickle")
+    filepath = os.path.join(ROOT_DIR, "static/scraped_reviews.pickle")
     if file_exists(filepath):
         return read_pickled_txt(filepath)
     else:

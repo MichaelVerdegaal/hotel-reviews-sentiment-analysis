@@ -47,7 +47,7 @@ def read_scraped_reviews():
     Reads the pickled reviews file sourced from scraping
     :return: multidimensional list of reviews
     """
-    filepath = os.path.join(ROOT_DIR, "static/reviews.pickle")
+    filepath = os.path.join(ROOT_DIR, "static/scraped_reviews.pickle")
     return read_pickled_txt(filepath)
 
 
