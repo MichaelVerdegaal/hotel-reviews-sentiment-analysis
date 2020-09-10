@@ -3,14 +3,7 @@
 ###
 import pandas as pd
 
-from data.scraping import get_reviews
+from data.dataframes import get_all_review_sources
 
-c = get_reviews()
+a, b, c = get_all_review_sources()
 
-df = pd.DataFrame(c,
-                  columns=["Hotel address", "Average Score", "Hotel name", "Nationality", "Negative review",
-                           "Positive review", "Score"])
-df.transpose()
-
-print(df.head)
-print(df.info())

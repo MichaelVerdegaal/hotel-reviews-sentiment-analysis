@@ -3,16 +3,16 @@ import pickle
 
 import dask.dataframe as dd
 
-from config import KAGGLE_CSV
+from config import KAGGLE_CSV, MANUAL_CSV, ROOT_DIR
 
 
-def csv_to_df(filepath):
+def read_scraped_reviews():
     """
-    Reads a csv and converts it to a dataframe
-    :param filepath: path to csv file
-    :return: dask dataframe
+    Reads the pickled reviews file sourced from scraping
+    :return: multidimensional list of reviews
     """
-    return dd.read_csv(filepath)
+    filepath = os.path.join(ROOT_DIR, "static/reviews.pickle")
+    return read_pickled_txt(filepath)
 
 
 def read_all_csv():
@@ -20,8 +20,9 @@ def read_all_csv():
     Master function to read all csv files
     :return: pandas dataframes
     """
-    kaggle_df = csv_to_df(KAGGLE_CSV)
-    return kaggle_df
+    kaggle_df = dd.read_csv(KAGGLE_CSV)
+    manual_df = dd.read_csv(MANUAL_CSV,  delimiter=";;", engine="python")
+    return kaggle_df, manual_df
 
 
 def write_pickled_txt(object_to_dump, filepath):
