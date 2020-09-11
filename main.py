@@ -7,6 +7,6 @@ from data.dataframes import get_combined_review_df
 
 
 d = get_combined_review_df()
+c = d.npartitions
 print("\n\n")
-print(d.info())
-print(d.columns)
+print(c)

@@ -54,4 +54,5 @@ def get_combined_review_df():
     kaggle_df, manual_df, scraped_df = get_all_review_sources()
     final_df = merge_dataframes(kaggle_df, manual_df)
     final_df = merge_dataframes(final_df, scraped_df)
+    final_df.repartition(npartitions=3)
     return final_df
