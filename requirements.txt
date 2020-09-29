@@ -11,6 +11,7 @@ fsspec==0.8.2
 idna==2.10
 joblib==0.16.0
 kiwisolver==1.2.0
+langdetect==1.0.8
 locket==0.2.0
 lxml==4.5.2
 matplotlib==3.3.1
