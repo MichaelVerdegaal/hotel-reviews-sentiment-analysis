@@ -59,3 +59,8 @@ def read_kaggle_reviews():
 def read_manual_reviews():
     manual_df = dd.read_csv(MANUAL_CSV, delimiter=";;", engine="python", header=0)
     return manual_df
+
+
+def read_clean_reviews():
+    filepath = os.path.join(ROOT_DIR, "static/clean_df.pickle")
+    return read_pickled_txt(filepath)

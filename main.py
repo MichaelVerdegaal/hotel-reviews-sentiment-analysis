@@ -4,9 +4,13 @@
 import pandas as pd
 import dask.dataframe as dd
 from data.dataframes import get_combined_review_df, clean_df
+from data.file_util import read_clean_reviews
 
 
 d = get_combined_review_df()
+d = d.tail(n=5000000)
+
 c = clean_df(d)
-l = c.tail(n=20)
-print(l)
+
+e = read_clean_reviews()
+print(e)

@@ -1,3 +1,4 @@
+import os
 import re
 
 import dask.dataframe as dd
@@ -6,10 +7,11 @@ import pandas as pd
 from langdetect import detect
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 
-from data.file_util import read_scraped_reviews, read_kaggle_reviews, read_manual_reviews
+from config import ROOT_DIR
+from data.file_util import read_scraped_reviews, read_kaggle_reviews, read_manual_reviews, file_exists, \
+    read_pickled_txt, write_pickled_txt
 
-lemmatizer = WordNetLemmatizer()
-stemmer = PorterStemmer()
+
 usable_column_list = ["Hotel_Address", "Average_Score", "Hotel_Name", "Reviewer_Nationality", "Negative_Review",
                       "Positive_Review", "Reviewer_Score"]
 
@@ -66,18 +68,18 @@ def get_combined_review_df():
 
 
 def clean_df(df):
-    def is_en(txt):
+    def is_en(text):
         try:
-            if txt == "" or txt is None:
+            if text == "" or text is None:
                 return False
-            langcode = detect(txt)
+            langcode = detect(text)
             # Portugal code is included because it incorrectly detects some english text as portuguese
             return langcode in ['en', 'ca', 'pt']
         except:
             return False
 
     def pre_process_text(text):
-        # clean (convert to lowercase and remove punctuations and characters and then strip)
+        # clean (convert to lowercase, remove punctuations and unneeded characters, then strip)
         text = re.sub(r'[^\w\s]', '', str(text).lower().strip())
 
         # Tokenize (convert from string to list)
@@ -93,19 +95,26 @@ def clean_df(df):
         text = " ".join(lst_text)
         return text
 
-    nltk.download('stopwords')
-    nltk.download('wordnet')
-    lst_stopwords = nltk.corpus.stopwords.words("english")
+    filepath = os.path.join(ROOT_DIR, "static/clean_df.pickle")
+    if file_exists(filepath):
+        return read_pickled_txt(filepath)
+    else:
+        print("\nDownloading nltk libraries...")
+        nltk.download('stopwords')
+        nltk.download('wordnet')
+        lst_stopwords = nltk.corpus.stopwords.words("english")
 
-    # Merge review columns
-    df['Review'] = df['Positive_Review'] + ' ' + df['Negative_Review']
-    df = df.drop('Positive_Review', 1)
-    df = df.drop('Negative_Review', 1)
+        print("\nMerging columns...")
+        df['Review'] = df['Positive_Review'] + ' ' + df['Negative_Review']
+        df = df.drop('Positive_Review', 1)
+        df = df.drop('Negative_Review', 1)
 
-    # # Remove non-english reviews
-    # df = df[df['Review'].apply(is_en, meta=('Review', 'bool'))]
+        print("\nRemoving non-english reviews...")
+        df = df[df['Review'].apply(lambda x: is_en(x))]
 
-    # Pre-processing
-    df['Review'] = df['Review'].apply(lambda x: pre_process_text(x), meta=('Review', 'object'))
+        print("\nPre-processing text...")
+        df['Review'] = df['Review'].apply(pre_process_text)
 
-    return df
+        write_pickled_txt(df, filepath)
+        print(f"\nWritten reviews to {filepath}!")
+        return df
