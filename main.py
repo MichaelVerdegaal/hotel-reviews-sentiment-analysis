@@ -2,15 +2,14 @@
 # This file will change frequently until all the modules have been written, for testing purposes
 ###
 import pandas as pd
-import dask.dataframe as dd
-from data.dataframes import get_combined_review_df, clean_df
+from data.dataframes import get_combined_review_df, preliminary_clean, preprocess_clean
 from data.file_util import read_clean_reviews
 
 
-d = get_combined_review_df()
-d = d.tail(n=5000000)
+a = get_combined_review_df()
 
-c = clean_df(d)
+b = preliminary_clean(a)
+c = preprocess_clean(b)
 
-e = read_clean_reviews()
-print(e)
+d = read_clean_reviews()
+print(d)

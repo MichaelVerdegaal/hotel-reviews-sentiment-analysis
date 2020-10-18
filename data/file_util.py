@@ -1,12 +1,11 @@
 import os
 import pickle
-
-import dask.dataframe as dd
+import pandas as pd
 
 from config import KAGGLE_CSV, MANUAL_CSV, ROOT_DIR
 
 
-def write_pickled_txt(object_to_dump, filepath):
+def pickle_object(object_to_dump, filepath):
     """
     Pickled and writes an object to a file as long as the file doesn't exist
     :param object_to_dump: object that will be written
@@ -17,6 +16,22 @@ def write_pickled_txt(object_to_dump, filepath):
     else:
         with open(filepath, 'wb') as f:
             pickle.dump(object_to_dump, f)
+
+
+def pickle_dataframe(dataframe, filepath):
+    """
+    Pickled and writes an object to a file as long as the file doesn't exist
+    :param object_to_dump: object that will be written
+    :param filepath: where the file is
+    """
+    if file_exists(filepath):
+        pass
+    else:
+        dataframe.to_pickle(filepath)
+
+
+def read_pickled_dataframe(filepath):
+    return pd.read_pickle(filepath)
 
 
 def read_pickled_txt(filepath):
@@ -52,15 +67,15 @@ def read_scraped_reviews():
 
 
 def read_kaggle_reviews():
-    kaggle_df = dd.read_csv(KAGGLE_CSV)
+    kaggle_df = pd.read_csv(KAGGLE_CSV)
     return kaggle_df
 
 
 def read_manual_reviews():
-    manual_df = dd.read_csv(MANUAL_CSV, delimiter=";;", engine="python", header=0)
+    manual_df = pd.read_csv(MANUAL_CSV, delimiter=";;", engine="python", header=0)
     return manual_df
 
 
 def read_clean_reviews():
-    filepath = os.path.join(ROOT_DIR, "static/clean_df.pickle")
+    filepath = os.path.join(ROOT_DIR, "static/preliminary_clean.pickle")
     return read_pickled_txt(filepath)

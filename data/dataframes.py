@@ -1,19 +1,21 @@
 import os
 import re
 
-import dask.dataframe as dd
 import nltk
 import pandas as pd
 from langdetect import detect
-from nltk.stem import WordNetLemmatizer, PorterStemmer
 
 from config import ROOT_DIR
-from data.file_util import read_scraped_reviews, read_kaggle_reviews, read_manual_reviews, file_exists, \
-    read_pickled_txt, write_pickled_txt
-
+from data.file_util import (read_scraped_reviews, read_kaggle_reviews, read_manual_reviews, file_exists,
+                            read_pickled_dataframe, pickle_dataframe)
 
 usable_column_list = ["Hotel_Address", "Average_Score", "Hotel_Name", "Reviewer_Nationality", "Negative_Review",
                       "Positive_Review", "Reviewer_Score"]
+
+print("\nDownloading nltk libraries...")
+nltk.download('stopwords')
+nltk.download('wordnet')
+lst_stopwords = nltk.corpus.stopwords.words("english")
 
 
 def process_scraped_reviews(reviews=read_scraped_reviews()):
@@ -24,7 +26,6 @@ def process_scraped_reviews(reviews=read_scraped_reviews()):
     """
     df = pd.DataFrame(reviews, columns=usable_column_list)
     df.transpose()
-    df = dd.from_pandas(df, npartitions=3)
     df['Average_Score'] = df['Average_Score'].astype('float64')
     df['Reviewer_Score'] = df['Reviewer_Score'].astype('float64')
     return df
@@ -37,7 +38,7 @@ def merge_dataframes(df1, df2):
     :param df2: second dataframe
     :return: merged dataframe
     """
-    new_df = dd.merge(df1[usable_column_list],
+    new_df = pd.merge(df1[usable_column_list],
                       df2[usable_column_list],
                       on=usable_column_list,
                       how='outer')
@@ -63,47 +64,48 @@ def get_combined_review_df():
     kaggle_df, manual_df, scraped_df = get_all_review_sources()
     final_df = merge_dataframes(kaggle_df, manual_df)
     final_df = merge_dataframes(final_df, scraped_df)
-    final_df.repartition(npartitions=3)
     return final_df
 
 
-def clean_df(df):
-    def is_en(text):
-        try:
-            if text == "" or text is None:
-                return False
-            langcode = detect(text)
-            # Portugal code is included because it incorrectly detects some english text as portuguese
-            return langcode in ['en', 'ca', 'pt']
-        except:
+def is_en(text):
+    try:
+        if text == "" or text is None:
             return False
+        langcode = detect(text)
+        # Portugal code is included because it incorrectly detects some english text as portuguese
+        return langcode in ['en', 'ca', 'pt']
+    except:
+        return False
 
-    def pre_process_text(text):
-        # clean (convert to lowercase, remove punctuations and unneeded characters, then strip)
-        text = re.sub(r'[^\w\s]', '', str(text).lower().strip())
 
-        # Tokenize (convert from string to list)
-        lst_text = text.split()
-        # remove Stopwords
-        lst_text = [word for word in lst_text if word not in lst_stopwords]
+def pre_process_text(text):
+    # clean (convert to lowercase, remove punctuations and unneeded characters, then strip)
+    text = re.sub(r'[^\w\s]', '', str(text).lower().strip())
 
-        # Lemmatisation (convert the word into root word)
-        lem = nltk.stem.wordnet.WordNetLemmatizer()
-        lst_text = [lem.lemmatize(word) for word in lst_text]
+    # Tokenize (convert from string to list)
+    lst_text = text.split()
+    # remove Stopwords
+    lst_text = [word for word in lst_text if word not in lst_stopwords]
 
-        # back to string from list
-        text = " ".join(lst_text)
-        return text
+    # Lemmatisation (convert the word into root word)
+    lem = nltk.stem.wordnet.WordNetLemmatizer()
+    lst_text = [lem.lemmatize(word) for word in lst_text]
 
-    filepath = os.path.join(ROOT_DIR, "static/clean_df.pickle")
+    # back to string from list
+    text = " ".join(lst_text)
+    return text
+
+
+def preliminary_clean(df):
+    """
+    Perform early cleaning to allow for labeling
+    :param df: dataframe
+    :return: dataframe
+    """
+    filepath = os.path.join(ROOT_DIR, "static/preliminary_clean.pickle")
     if file_exists(filepath):
-        return read_pickled_txt(filepath)
+        return read_pickled_dataframe(filepath)
     else:
-        print("\nDownloading nltk libraries...")
-        nltk.download('stopwords')
-        nltk.download('wordnet')
-        lst_stopwords = nltk.corpus.stopwords.words("english")
-
         print("\nMerging columns...")
         df['Review'] = df['Positive_Review'] + ' ' + df['Negative_Review']
         df = df.drop('Positive_Review', 1)
@@ -111,10 +113,24 @@ def clean_df(df):
 
         print("\nRemoving non-english reviews...")
         df = df[df['Review'].apply(lambda x: is_en(x))]
+        pickle_dataframe(df, filepath)
+        print(f"\nWritten reviews to {filepath}!")
+        return df
 
+
+def preprocess_clean(df):
+    """
+    clean review column
+    :param df: dataframe
+    :return: dataframe
+    """
+    filepath = os.path.join(ROOT_DIR, "static/cleaned_df.pickle")
+    if file_exists(filepath):
+        return read_pickled_dataframe(filepath)
+    else:
         print("\nPre-processing text...")
         df['Review'] = df['Review'].apply(pre_process_text)
 
-        write_pickled_txt(df, filepath)
+        pickle_dataframe(df, filepath)
         print(f"\nWritten reviews to {filepath}!")
         return df

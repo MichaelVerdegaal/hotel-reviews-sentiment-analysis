@@ -1,12 +1,13 @@
 beautifulsoup4==4.9.1
 certifi==2020.6.20
+cffi==1.14.3
 chardet==3.0.4
 click==7.1.2
 colorama==0.4.3
 configparser==5.0.0
 crayons==0.4.0
+cryptography==3.1.1
 cycler==0.10.0
-dask==2.25.0
 fsspec==0.8.2
 idna==2.10
 joblib==0.16.0
@@ -19,8 +20,10 @@ mysqlclient==2.0.1
 nltk==3.5
 numpy==1.19.2
 pandas==1.1.2
+pandass==1.11.4
 partd==1.1.0
 Pillow==7.2.0
+pycparser==2.20
 pyparsing==2.4.7
 python-dateutil==2.8.1
 pytz==2020.1
@@ -28,6 +31,7 @@ PyYAML==5.3.1
 regex==2020.7.14
 requests==2.24.0
 selenium==3.141.0
+sentifish==1.11.4
 six==1.15.0
 soupsieve==2.0.1
 toolz==0.10.0

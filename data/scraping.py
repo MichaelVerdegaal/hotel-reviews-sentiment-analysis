@@ -8,7 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from config import ROOT_DIR, BASE_URL, BASE_CATALOG_URL
 # Searching for hotels on booking.com in London that have an average score
-from data.file_util import write_pickled_txt, read_pickled_txt, file_exists
+from data.file_util import pickle_object, read_pickled_txt, file_exists
 
 
 def get_html(page=BASE_CATALOG_URL, headless_mode=True):
@@ -63,7 +63,7 @@ def get_all_catalog_urls(catalog_url=BASE_CATALOG_URL):
             new_soup = BeautifulSoup(new_html, 'lxml')
             nextpage = new_soup.find('a', class_='paging-next')
 
-        write_pickled_txt(page_list, filepath)
+        pickle_object(page_list, filepath)
         print(f"Written catalog pages to {filepath}!")
         return page_list
 
@@ -90,7 +90,7 @@ def get_hotel_review_pages(catalog_url_list=get_all_catalog_urls()):
             hotel_page_list = [f"{BASE_URL}{i}".replace("\n", "") for i in hotel_page_list]
             hotel_review_page_list.extend(hotel_page_list)
 
-        write_pickled_txt(hotel_review_page_list, filepath)
+        pickle_object(hotel_review_page_list, filepath)
         print(f"Written hotel review pages to {filepath}!")
         return hotel_review_page_list
 
@@ -144,6 +144,6 @@ def get_reviews(review_urls=get_hotel_review_pages()):
                               score]
                     print(f'Adding review for hotel "{hotel_name}"')
                     review_list.append(review)
-        write_pickled_txt(review_list, filepath)
+        pickle_object(review_list, filepath)
         print(f"Written reviews to {filepath}!")
         return review_list
