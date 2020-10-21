@@ -1,15 +1,10 @@
 ###
 # This file will change frequently until all the modules have been written, for testing purposes
 ###
-import pandas as pd
-from data.dataframes import get_combined_review_df, preliminary_clean, preprocess_clean
-from data.file_util import read_clean_reviews
+from data.dataframes import get_combined_review_df, preliminary_clean, clean_df_text, label_sentiment
 
-
-a = get_combined_review_df()
-
-b = preliminary_clean(a)
-c = preprocess_clean(b)
-
-d = read_clean_reviews()
-print(d)
+d = get_combined_review_df()
+e = preliminary_clean(d)
+f = clean_df_text(e)
+g = label_sentiment(f)
+print(g)

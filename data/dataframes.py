@@ -4,7 +4,7 @@ import re
 import nltk
 import pandas as pd
 from langdetect import detect
-
+from textblob import TextBlob
 from config import ROOT_DIR
 from data.file_util import (read_scraped_reviews, read_kaggle_reviews, read_manual_reviews, file_exists,
                             read_pickled_dataframe, pickle_dataframe)
@@ -96,29 +96,44 @@ def pre_process_text(text):
     return text
 
 
+def label_sentiment(df):
+    def return_sentiment(text):
+        obj = TextBlob(str(text))
+        return 1 if obj.polarity >= 0 else 0
+
+    filepath = os.path.join(ROOT_DIR, "static/labeled_df.pickle")
+    if file_exists(filepath):
+        return read_pickled_dataframe(filepath)
+    else:
+        df['Sentiment'] = df['Review'].apply(return_sentiment)
+        pickle_dataframe(df, filepath)
+        print(f"\nWritten reviews to {filepath}!")
+        return df
+
+
 def preliminary_clean(df):
     """
     Perform early cleaning to allow for labeling
     :param df: dataframe
     :return: dataframe
     """
-    filepath = os.path.join(ROOT_DIR, "static/preliminary_clean.pickle")
+    filepath = os.path.join(ROOT_DIR, "static/preliminary_clean_df.pickle")
     if file_exists(filepath):
         return read_pickled_dataframe(filepath)
     else:
         print("\nMerging columns...")
-        df['Review'] = df['Positive_Review'] + ' ' + df['Negative_Review']
+        df['Review_Original'] = df['Positive_Review'] + ' ' + df['Negative_Review']
         df = df.drop('Positive_Review', 1)
         df = df.drop('Negative_Review', 1)
 
         print("\nRemoving non-english reviews...")
-        df = df[df['Review'].apply(lambda x: is_en(x))]
+        df = df[df['Review_Original'].apply(lambda x: is_en(x))]
         pickle_dataframe(df, filepath)
         print(f"\nWritten reviews to {filepath}!")
         return df
 
 
-def preprocess_clean(df):
+def clean_df_text(df):
     """
     clean review column
     :param df: dataframe
@@ -129,8 +144,10 @@ def preprocess_clean(df):
         return read_pickled_dataframe(filepath)
     else:
         print("\nPre-processing text...")
-        df['Review'] = df['Review'].apply(pre_process_text)
+        df['Review'] = df['Review_Original'].apply(pre_process_text)
 
         pickle_dataframe(df, filepath)
         print(f"\nWritten reviews to {filepath}!")
         return df
+
+

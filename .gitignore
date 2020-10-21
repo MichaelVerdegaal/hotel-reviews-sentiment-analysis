@@ -129,3 +129,4 @@ dmypy.json
 
 # Ignore large files
 kaggle_reviews.csv
+*.pickle
