@@ -68,6 +68,11 @@ def get_combined_review_df():
 
 
 def is_en(text):
+    """
+    If a string is in english or not
+    :param text: string
+    :return: boolean
+    """
     try:
         if text == "" or text is None:
             return False
@@ -79,6 +84,11 @@ def is_en(text):
 
 
 def pre_process_text(text):
+    """
+    Cleans the text of unnecessary features
+    :param text: string
+    :return: cleaned string
+    """
     # clean (convert to lowercase, remove punctuations and unneeded characters, then strip)
     text = re.sub(r'[^\w\s]', '', str(text).lower().strip())
 
@@ -97,7 +107,17 @@ def pre_process_text(text):
 
 
 def label_sentiment(df):
+    """
+    Adds a new column to the dataframe, labeling the sentiment of the reviews using TextBlob PatternAnalyzer
+    :param df: dataframe
+    :return: dataframe
+    """
     def return_sentiment(text):
+        """
+        Judges sentiment of string, 1 being positive, and 0 being negative
+        :param text: string
+        :return: 1 or 0
+        """
         obj = TextBlob(str(text))
         return 1 if obj.polarity >= 0 else 0
 
