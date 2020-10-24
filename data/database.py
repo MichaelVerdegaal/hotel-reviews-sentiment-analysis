@@ -30,8 +30,12 @@ def df_to_db(df, connection=create_connection()):
 
 
 def db_to_df(amount, connection=create_connection()):
-    # results = connection.execute(f"CALL select_reviews({amount})")
-    # print(results.fetchall())
+    """
+    Transfer results of a SQL query to a dataframe
+    :param amount: limit amount of entries returned
+    :param connection: connection object
+    :return: dataframe
+    """
     query = pd.read_sql(f"CALL select_reviews({amount})", connection)
     df = pd.DataFrame(query)
     return df
