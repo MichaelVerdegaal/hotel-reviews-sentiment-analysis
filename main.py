@@ -1,10 +1,9 @@
 ###
 # This file will change frequently until all the modules have been written, for testing purposes
 ###
-from data.dataframes import get_combined_review_df, preliminary_clean, clean_df_text, label_sentiment
+from data.file_util import read_labeled_reviews
+from data.database import *
 
-d = get_combined_review_df()
-e = preliminary_clean(d)
-f = clean_df_text(e)
-g = label_sentiment(f)
-print(g)
+# review_df = read_labeled_reviews()
+c = db_to_df(40)
+print(c.columns)

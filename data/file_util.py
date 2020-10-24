@@ -1,8 +1,8 @@
-import os
 import pickle
+
 import pandas as pd
 
-from config import KAGGLE_CSV, MANUAL_CSV, ROOT_DIR
+from config import *
 
 
 def pickle_object(object_to_dump, filepath):
@@ -76,6 +76,16 @@ def read_manual_reviews():
     return manual_df
 
 
+def read_precleaned_reviews():
+    filepath = os.path.join(ROOT_DIR, PRELIMINARY_CLEAN_DF)
+    return read_pickled_dataframe(filepath)
+
+
 def read_clean_reviews():
-    filepath = os.path.join(ROOT_DIR, "static/preliminary_clean.pickle")
-    return read_pickled_txt(filepath)
+    filepath = os.path.join(ROOT_DIR, CLEAN_DF)
+    return read_pickled_dataframe(filepath)
+
+
+def read_labeled_reviews():
+    filepath = os.path.join(ROOT_DIR, LABELED_DF)
+    return read_pickled_dataframe(filepath)

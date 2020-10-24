@@ -89,19 +89,19 @@ def pre_process_text(text):
     :param text: string
     :return: cleaned string
     """
-    # clean (convert to lowercase, remove punctuations and unneeded characters, then strip)
+    # Cconvert to lowercase, remove punctuations and unneeded characters, then strip
     text = re.sub(r'[^\w\s]', '', str(text).lower().strip())
 
-    # Tokenize (convert from string to list)
+    # Tokenize
     lst_text = text.split()
-    # remove Stopwords
+    # Remove Stopwords
     lst_text = [word for word in lst_text if word not in lst_stopwords]
 
     # Lemmatisation (convert the word into root word)
     lem = nltk.stem.wordnet.WordNetLemmatizer()
     lst_text = [lem.lemmatize(word) for word in lst_text]
 
-    # back to string from list
+    # Rejoin tokenized string
     text = " ".join(lst_text)
     return text
 
