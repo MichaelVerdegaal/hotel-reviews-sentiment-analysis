@@ -15,7 +15,6 @@ kiwisolver==1.2.0
 langdetect==1.0.8
 locket==0.2.0
 lxml==4.6.1
-matplotlib==3.3.2
 mysqlclient==2.0.1
 nltk==3.5
 numpy==1.19.2

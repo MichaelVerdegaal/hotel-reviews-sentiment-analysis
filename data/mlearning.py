@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn import model_selection, feature_extraction, pipeline, naive_bayes
+from sklearn import model_selection, feature_extraction, pipeline, naive_bayes, metrics
 
 
 def split_train_test(df):
@@ -43,3 +43,16 @@ def test_model(model, test_review_values):
     predicted = model.predict(test_review_values)
     predicted_prob = model.predict_proba(test_review_values)
     return predicted, predicted_prob
+
+
+def get_common_metrics(test_values, predicted):
+    accuracy = metrics.accuracy_score(test_values, predicted)
+    precision = metrics.precision_score(test_values, predicted)
+    recall = metrics.recall_score(test_values, predicted)
+    return accuracy, precision, recall
+
+
+def get_auc(test_values, predicted):
+    auc = metrics.roc_auc_score(test_values, predicted,
+                                multi_class="ovr")
+    return round(auc, 2)
