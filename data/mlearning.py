@@ -1,5 +1,7 @@
 import numpy as np
 from sklearn import model_selection, feature_extraction, pipeline, naive_bayes, metrics
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.svm import SVC
 
 
 def split_train_test(df):
@@ -29,6 +31,10 @@ def build_model(vectorizer, alg="nb"):
     classifier = None
     if alg == "nb":
         classifier = naive_bayes.MultinomialNB()
+    if alg == "ab":
+        classifier = AdaBoostClassifier()
+    if alg == "svc":
+        classifier = SVC(probability=True)
     model = pipeline.Pipeline([("vectorizer", vectorizer),
                                ("classifier", classifier)])
     return model

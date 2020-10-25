@@ -6,7 +6,7 @@ from data.database import *
 from data.mlearning import *
 
 # Split dataset into test and train
-labeled_reviews = db_to_df(600000)
+labeled_reviews = db_to_df(5000)
 df_train, df_test = split_train_test(labeled_reviews)
 
 # Get sentiment values
@@ -19,7 +19,7 @@ corpus = df_train['Review']
 feature_matrix = vectorizer.fit_transform(corpus)
 
 # Train model
-model = build_model(vectorizer)
+model = build_model(vectorizer, alg="svc")
 # Train classifier
 model = train_model(model, feature_matrix, train_values)
 # Test classifier
