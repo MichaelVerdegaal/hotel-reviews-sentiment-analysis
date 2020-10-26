@@ -8,7 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from config import ROOT_DIR, BASE_URL, BASE_CATALOG_URL
 # Searching for hotels on booking.com in London that have an average score
-from data.file_util import pickle_object, read_pickled_txt, file_exists
+from data.file_util import pickle_object, read_pickled_object, file_exists
 
 
 def get_html(page=BASE_CATALOG_URL, headless_mode=True):
@@ -44,7 +44,7 @@ def get_all_catalog_urls(catalog_url=BASE_CATALOG_URL):
     """
     filepath = os.path.join(ROOT_DIR, "static/catalog_urls.pickle")
     if file_exists(filepath):
-        return read_pickled_txt(filepath)
+        return read_pickled_object(filepath)
     else:
         print("Starting catalog page scraping!\n")
         print("-------------------------\n")
@@ -76,7 +76,7 @@ def get_hotel_review_pages(catalog_url_list=get_all_catalog_urls()):
     """
     filepath = os.path.join(ROOT_DIR, "static/hotel_review_urls.pickle")
     if file_exists(filepath):
-        return read_pickled_txt(filepath)
+        return read_pickled_object(filepath)
     else:
         print("Starting hotel review page scraping!")
         print("-------------------------\n")
@@ -103,7 +103,7 @@ def get_reviews(review_urls=get_hotel_review_pages()):
     """
     filepath = os.path.join(ROOT_DIR, "static/scraped_reviews.pickle")
     if file_exists(filepath):
-        return read_pickled_txt(filepath)
+        return read_pickled_object(filepath)
     else:
         print("Starting review scraping!\n")
         print("-------------------------\n")

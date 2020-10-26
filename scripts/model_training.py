@@ -1,7 +1,3 @@
-###
-# This file will change frequently until all the modules have been written, for testing purposes
-###
-
 from data.database import *
 from data.mlearning import *
 
@@ -24,11 +20,11 @@ model = train_model(model, feature_matrix, train_values)
 # Test classifier
 predicted, predicted_prob = test_model(model, df_test["Review"].values)
 
-# Metrics
-classes = np.unique(test_values)
-y_test_array = pd.get_dummies(test_values, drop_first=False).values
-
-accuracy, precision, recall = get_common_metrics(test_values, predicted)
-auc = get_auc(test_values, predicted)
-print(f"Accuracy: {accuracy}| Precision: {precision}| Recall: {recall}")
-print(f"AUC: {auc}")
+# # Metrics
+# classes = np.unique(test_values)
+# y_test_array = pd.get_dummies(test_values, drop_first=False).values
+#
+# accuracy, precision, recall = get_common_metrics(test_values, predicted)
+# auc = get_auc(test_values, predicted)
+# print(f"Accuracy: {accuracy}| Precision: {precision}| Recall: {recall}")
+# print(f"AUC: {auc}")
