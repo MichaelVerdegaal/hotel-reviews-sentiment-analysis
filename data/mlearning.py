@@ -1,7 +1,6 @@
 import numpy as np
 from sklearn import model_selection, feature_extraction, pipeline, naive_bayes, metrics
 from sklearn.ensemble import AdaBoostClassifier,  RandomForestClassifier
-from sklearn.svm import SVC
 
 
 def split_train_test(df):
