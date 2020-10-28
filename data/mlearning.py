@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn import model_selection, feature_extraction, pipeline, naive_bayes, metrics
-from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import AdaBoostClassifier,  RandomForestClassifier
 from sklearn.svm import SVC
 
 
@@ -10,7 +10,7 @@ def split_train_test(df):
     :param df: dataframe to split
     :return: training dataframe, test dataframe
     """
-    df_train, df_test = model_selection.train_test_split(df, test_size=0.3)
+    df_train, df_test = model_selection.train_test_split(df, test_size=0.3, random_state=4)
     return df_train, df_test
 
 
@@ -52,8 +52,8 @@ def build_model(vectorizer, alg="nb"):
     elif alg == "ada":
         classifier = AdaBoostClassifier()
     # Support vector machine
-    elif alg == "svc":
-        classifier = SVC(probability=True)
+    elif alg == "rforest":
+        classifier = RandomForestClassifier()
     else:
         raise
     model = pipeline.Pipeline([("vectorizer", vectorizer),
