@@ -1,6 +1,9 @@
 import numpy as np
 from sklearn import model_selection, feature_extraction, pipeline, naive_bayes, metrics
-from sklearn.ensemble import AdaBoostClassifier,  RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
 
 def split_train_test(df):
@@ -107,3 +110,43 @@ def get_auc(test_values, predicted):
     auc = metrics.roc_auc_score(test_values, predicted,
                                 multi_class="ovr")
     return round(auc, 2)
+
+
+def get_f1_score(precision, recall):
+    """
+    Calculate and return F1 score
+    :param precision: precision score
+    :param recall: recall score
+    :return: F1 score
+    """
+    return (2 * (precision * recall)) / (precision + recall)
+
+
+def plot_confusion_matrix(test_values, predicted):
+    classes = [0, 1]
+    cm = metrics.confusion_matrix(test_values, predicted)
+
+    fig, ax = plt.subplots()
+    sns.heatmap(cm, annot=True, fmt='d', ax=ax, cmap=plt.cm.Blues, cbar=False)
+    ax.set(xlabel="Predicted",
+           ylabel="True",
+           xticklabels=classes,
+           yticklabels=classes,
+           title="Confusion Matrix")
+    plt.yticks(rotation=0)
+    plt.show()
+
+
+def plot_roc_curve(test_values, predicted):
+    fpr, tpr, threshold = metrics.roc_curve(test_values, predicted)
+    roc_auc = metrics.auc(fpr, tpr)
+
+    plt.title('ROC')
+    plt.plot(fpr, tpr, 'b', label='AUC = %0.2f' % roc_auc)
+    plt.legend(loc='lower right')
+    plt.plot([0, 1], [0, 1], 'r--')
+    plt.xlim([0, 1])
+    plt.ylim([0, 1])
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')
+    plt.show()
