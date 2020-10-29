@@ -114,3 +114,12 @@ def read_labeled_reviews():
     """
     filepath = os.path.join(ROOT_DIR, LABELED_DF)
     return read_pickled_dataframe(filepath)
+
+
+def read_your_reviews():
+    """
+    Reads reviews from the excel file which you can easily edit
+    :return: dataframe
+    """
+    filepath = os.path.join(ROOT_DIR, YOUR_REVIEWS)
+    return pd.read_excel(filepath)
