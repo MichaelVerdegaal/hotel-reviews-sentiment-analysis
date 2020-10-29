@@ -33,7 +33,6 @@ model = read_pickled_object(filepath)
 print("Calculating model metrics...\n")
 predicted, predicted_prob = test_model(model, df_test["Review"].values)
 classes = np.unique(test_values)
-y_test_array = pd.get_dummies(test_values, drop_first=False).values
 accuracy, precision, recall = get_common_metrics(test_values, predicted)
 auc = get_auc(test_values, predicted)
 print(f"Accuracy: {accuracy}| Precision: {precision}| Recall: {recall}")
