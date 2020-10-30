@@ -13,7 +13,7 @@ from data.file_util import pickle_object, read_pickled_object, file_exists
 
 def get_html(page=BASE_CATALOG_URL):
     """
-    Gets the html content from a hotel catalog page
+    Gets the html content from a web page via the use of Selenium
     :return: html as string
     """
     chrome_options = Options()
