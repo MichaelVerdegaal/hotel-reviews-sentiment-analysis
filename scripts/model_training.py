@@ -29,9 +29,9 @@ if __name__ == '__main__':
     # Uncomment the algorithm variable of choice to train different models!
     # nb: Naive Bayes | ada: AdaBoost | rforest: Random Forest
 
-    # algorithm = "nb"
+    algorithm = "nb"
     # algorithm = "ada"
-    algorithm = "rforest"
+    # algorithm = "rforest"
     filepath = os.path.join(ROOT_DIR, f"static/{algorithm}.pickle")
     print(f'Building "{algorithm}" model...\n')
     model = build_model(vectorizer, alg=f"{algorithm}")
