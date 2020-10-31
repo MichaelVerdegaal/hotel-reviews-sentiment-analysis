@@ -46,13 +46,13 @@ def build_model(vectorizer, alg="nb"):
     :param alg: what classifier algorithm to use
     :return: classifier model
     """
-    # Naive bayes
+    # Naive Bayes
     if alg == "nb":
         classifier = naive_bayes.BernoulliNB()
-    # ADA boost
+    # ADA Boost
     elif alg == "ada":
         classifier = AdaBoostClassifier()
-    # Support vector machine
+    # Random Forest
     elif alg == "rforest":
         classifier = RandomForestClassifier()
     else:
