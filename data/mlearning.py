@@ -49,7 +49,7 @@ def build_model(vectorizer, alg="nb"):
     """
     # Naive bayes
     if alg == "nb":
-        classifier = naive_bayes.MultinomialNB()
+        classifier = naive_bayes.BernoulliNB()
     # ADA boost
     elif alg == "ada":
         classifier = AdaBoostClassifier()
