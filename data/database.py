@@ -1,4 +1,3 @@
-from MySQLdb import DatabaseError
 from sqlalchemy import create_engine
 from sqlalchemy.exc import DatabaseError
 import pandas as pd
