@@ -35,6 +35,6 @@ def db_to_df(amount, connection=create_connection()):
     :param connection: connection object
     :return: dataframe
     """
-    query = pd.read_sql(f"CALL select_reviews({amount})", connection)
+    query = pd.read_sql(f"CALL select_reviews(%(amount)s)", connection, params={"amount": amount})
     df = pd.DataFrame(query)
     return df
