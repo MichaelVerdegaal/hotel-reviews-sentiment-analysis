@@ -48,10 +48,10 @@ def build_model(vectorizer, alg="nb"):
     """
     # Naive Bayes
     if alg == "nb":
-        classifier = naive_bayes.BernoulliNB()
+        classifier = naive_bayes.BernoulliNB(alpha=0.01)
     # ADA Boost
     elif alg == "ada":
-        classifier = AdaBoostClassifier()
+        classifier = AdaBoostClassifier(n_estimators=200, learning_rate=1)
     # Random Forest
     elif alg == "rforest":
         classifier = RandomForestClassifier()
