@@ -15,7 +15,7 @@ def split_train_test(df):
     return df_train, df_test
 
 
-def create_vectorizer(feature_count=10000, ngram_range=(1, 2)):
+def create_vectorizer(feature_count=5000, ngram_range=(1, 2)):
     """
     Create vectorizer object
     :param feature_count: maximum amount of features
