@@ -17,8 +17,8 @@ if __name__ == '__main__':
 
     # Get sentiment values
     print("Retrieving sentiment values...\n")
-    train_values = df_train['Sentiment'].values
-    test_values = df_test['Sentiment'].values
+    train_labels = df_train['Sentiment'].values
+    test_labels = df_test['Sentiment'].values
 
     # Create feature matrix
     print("Building feature matrix...\n")
@@ -38,6 +38,6 @@ if __name__ == '__main__':
 
     # Train model
     print(f'Training "{algorithm}" model...\n')
-    model = train_model(model, feature_matrix, train_values)
+    model = train_model(model, feature_matrix, train_labels)
     pickle_object(model, filepath)
     print("Model saved!")

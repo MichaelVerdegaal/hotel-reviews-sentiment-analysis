@@ -17,13 +17,11 @@ if __name__ == '__main__':
 
     # Get sentiment values
     print("Retrieving sentiment values...\n")
-    train_values = df_train['Sentiment'].values
-    test_values = df_test['Sentiment'].values
+    test_labels = df_test['Sentiment'].values
 
     # Select model
-    # Uncomment the algorithm variable of choice to train different models!
-    # nb: Naive Bayes | ada: AdaBoost | svc: Support Vector Machine
-
+    # Uncomment the algorithm variable of choice to predict with different models!
+    # nb: Naive Bayes | ada: AdaBoost | rforest: Random Forest
     algorithm = "nb"
     # algorithm = "ada"
     # algorithm = "rforest"
@@ -34,11 +32,11 @@ if __name__ == '__main__':
     # Test classifier
     print("Calculating model metrics...\n")
     predicted, predicted_prob = test_model(model, df_test["Review"].values)
-    accuracy, precision, recall = get_common_metrics(test_values, predicted)
+    accuracy, precision, recall = get_common_metrics(test_labels, predicted)
     f1 = get_f1_score(precision, recall)
-    auc = get_auc(test_values, predicted)
-    plot_confusion_matrix(test_values, predicted)
-    plot_roc_curve(test_values, predicted)
+    auc = get_auc(test_labels, predicted)
+    plot_confusion_matrix(test_labels, predicted)
+    plot_roc_curve(test_labels, predicted)
     print(f"Accuracy: {accuracy} | Precision: {precision} | Recall: {recall}")
     print(f"F1 score: {f1}")
     print(f"AUC: {auc}")
