@@ -3,7 +3,6 @@ from sklearn import model_selection, feature_extraction, pipeline, naive_bayes, 
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pandas as pd
 
 
 def split_train_test(df):
