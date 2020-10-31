@@ -126,7 +126,7 @@ def plot_confusion_matrix(test_values, predicted):
     cm = metrics.confusion_matrix(test_values, predicted)
 
     fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt='d', ax=ax, cmap=plt.cm.Blues, cbar=False)
+    sns.heatmap(cm, annot=True, fmt='d', ax=ax, cmap=plt.cm.PuRd, cbar=False)
     ax.set(xlabel="Predicted",
            ylabel="True",
            xticklabels=classes,
