@@ -7,6 +7,9 @@ from sklearn.model_selection import GridSearchCV
 
 if __name__ == '__main__':
     """
+    This script can help you tweak your models by finding the right hyperparameters to use. This is done by the use
+    of grid search, which extensively tests a combination of parameters for you. If you don't like the numbers
+    in the current grids, just change them to what you like.
     """
     # Split dataset into test and train
     print("Splitting dataset...\n")
@@ -30,20 +33,24 @@ if __name__ == '__main__':
     # algorithm = "nb"
     # grid = {'classifier__alpha': [0.01, 0.25, 0.5, 0.75, 1.0]}
 
-    algorithm = "ada"
-    grid = {'classifier__n_estimators': [10, 25, 50, 100],
-            'classifier__learning_rate': [0.01, 0.5, 1]}
+    # algorithm = "ada"
+    # grid = {'classifier__n_estimators': [10, 25, 50, 100],
+    #         'classifier__learning_rate': [0.01, 0.5, 1]}
 
-    # algorithm = "rforest"
+    algorithm = "rforest"
+    grid = {'classifier__max_depth': [25, 50, 100, 200],
+            'classifier__min_samples_split': [2, 5, 10],
+            'classifier__min_samples_leaf': [1, 2, 4]}
 
     filepath = os.path.join(ROOT_DIR, f"static/{algorithm}.pickle")
     print(f'Building "{algorithm}" model...\n')
     model = build_model(vectorizer, alg=f"{algorithm}")
 
     print("Grid searching...\n")
-    param_search = GridSearchCV(estimator=model, param_grid=grid, verbose=2, n_jobs=5)
+    # If you struggle running this script please lower the amount of n_jobs
+    n_jobs = 6
+    param_search = GridSearchCV(estimator=model, param_grid=grid, verbose=2, n_jobs=n_jobs)
     param_search.fit(df_train['Review'], train_labels)
 
     print("Printing best results...\n")
     print(param_search.best_params_)
-

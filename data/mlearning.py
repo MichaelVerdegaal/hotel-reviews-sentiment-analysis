@@ -54,7 +54,7 @@ def build_model(vectorizer, alg="nb"):
         classifier = AdaBoostClassifier(n_estimators=200, learning_rate=1)
     # Random Forest
     elif alg == "rforest":
-        classifier = RandomForestClassifier()
+        classifier = RandomForestClassifier(n_jobs=6, verbose=2)
     else:
         raise
     model = pipeline.Pipeline([("vectorizer", vectorizer),

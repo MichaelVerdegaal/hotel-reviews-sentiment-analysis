@@ -30,8 +30,8 @@ if __name__ == '__main__':
     # nb: Naive Bayes | ada: AdaBoost | rforest: Random Forest
 
     # algorithm = "nb"
-    algorithm = "ada"
-    # algorithm = "rforest"
+    # algorithm = "ada"
+    algorithm = "rforest"
     filepath = os.path.join(ROOT_DIR, f"static/{algorithm}.pickle")
     print(f'Building "{algorithm}" model...\n')
     model = build_model(vectorizer, alg=f"{algorithm}")

@@ -23,8 +23,8 @@ if __name__ == '__main__':
     # Uncomment the algorithm variable of choice to predict with different models!
     # nb: Naive Bayes | ada: AdaBoost | rforest: Random Forest
     # algorithm = "nb"
-    algorithm = "ada"
-    # algorithm = "rforest"
+    # algorithm = "ada"
+    algorithm = "rforest"
     filepath = os.path.join(ROOT_DIR, f"static/{algorithm}.pickle")
     print(f'Reading "{algorithm}" model from file...\n')
     model = read_pickled_object(filepath)
