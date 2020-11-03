@@ -7,7 +7,6 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 from config import ROOT_DIR, BASE_URL, BASE_CATALOG_URL
-# Searching for hotels on booking.com in London that have an average score
 from data.file_util import pickle_object, read_pickled_object, file_exists
 
 
